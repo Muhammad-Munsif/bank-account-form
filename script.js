@@ -151,11 +151,10 @@ window.onload = () => {
 };
 
 function toggleDarkMode() {
-    document.body.classList.toggle("dark");
-    isDark = !isDark;
-  
-    const icon = document.querySelector(".toggle-btn i");
-    icon.classList.toggle("fa-moon");
-    icon.classList.toggle("fa-sun");
-  }
-  
+  document.body.classList.toggle("dark");
+  isDark = !isDark;
+
+  const icon = document.querySelector(".toggle-btn i");
+  icon.classList.toggle("fa-moon");
+  icon.classList.toggle("fa-sun");
+}
