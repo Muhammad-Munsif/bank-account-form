@@ -4,7 +4,6 @@
   box-sizing: border-box;
   font-family: "Segoe UI", sans-serif;
 }
-
 body {
   background: #f5f7fa;
   display: flex;
@@ -13,7 +12,6 @@ body {
   min-height: 100vh;
   transition: background 0.3s;
 }
-
 body.dark {
   background: #1e1e2f;
   color: #f0f0f0;
@@ -98,8 +96,9 @@ body.dark #balance {
   opacity: 0.9;
 }
 
-.login-section input, .login-section >button {
-    width: 100%;
+.login-section input,
+.login-section > button {
+  width: 100%;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
