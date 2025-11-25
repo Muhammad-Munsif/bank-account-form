@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bank Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --primary-color: #3b82f6; /* A vibrant blue */
+        --secondary-color: #10b981; /* A friendly green */
+        --danger-color: #ef4444; /* Standard red */
+        --bg-light: #f3f4f6;
+        --card-light: #ffffff;
+        --text-light: #1f2937;
+        --bg-dark: #1f2937;
+        --card-dark: #374151;
+        --text-dark: #f9fafb;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif; /* Applied new font */
+      }
+
+      body {
+        background: var(--bg-light);
+        color: var(--text-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        transition: background 0.5s, color 0.5s;
+      }
+      body.dark {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      .container {
+        width: 90%;
+        max-width: 480px; /* Slightly tighter width */
+        padding: 20px;
+      }
+
+      .bank-card {
+        background: var(--card-light);
+        border-radius: 20px; /* More rounded corners */
+        padding: 30px;
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: background 0.5s, box-shadow 0.5s;
+      }
+
+      body.dark .bank-card {
+        background: var(--card-dark);
+        color: var(--text-dark);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .header h2 {
+        font-weight: 700;
+        color: var(--primary-color);
+        transition: color 0.5s;
+      }
+      body.dark .header h2 {
+        color: var(--secondary-color);
+      }
+
+      .toggle-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: color 0.3s;
+      }
+      body.dark .toggle-btn {
+        color: var(--text-dark);
+      }
+      .toggle-btn:hover {
+        color: var(--primary-color);
+      }
+      body.dark .toggle-btn:hover {
+        color: var(--secondary-color);
+      }
+
+      .welcome {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+
+      .account-number {
+        font-size: 0.9rem;
+        color: #6b7280; /* Subdued text */
+      }
+      body.dark .account-number {
+        color: #9ca3af;
+      }
+
+      .balance {
+        margin: 15px 0 25px 0;
+        font-size: 1.2rem;
+      }
+
+      #balance {
+        font-weight: 700;
+        font-size: 2.5rem; /* Large, impressive balance display */
+        color: var(--primary-color);
+        display: block;
+        margin-top: 5px;
+        transition: color 0.5s;
+      }
+
+      body.dark #balance {
+        color: var(--secondary-color);
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+      }
+
+      .btn.secondary {
+        background-color: var(--secondary-color);
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn.logout {
+        background-color: var(--danger-color);
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+      }
+
+      /* Input and form styling */
+      .login-section input,
+      .form-section input,
+      .form-section select,
+      .filter-section input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        margin-top: 10px;
+        font-size: 1rem;
+        background: var(--card-light);
+        color: var(--text-light);
+        transition: all 0.3s;
+      }
+
+      body.dark .login-section input,
+      body.dark .form-section input,
+      body.dark .form-section select,
+      body.dark .filter-section input {
+        background: var(--card-dark);
+        border-color: #4b5563;
+        color: var(--text-dark);
+      }
+
+      .login-section > button,
+      .form-section > button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        background-color: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .form-section h3,
+      .filter-section h3,
+      .history h3 {
+        margin-bottom: 10px;
+        margin-top: 25px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: left;
+      }
+
+      /* Transaction History */
+      .history {
+        text-align: left;
+        margin-top: 20px;
+      }
+
+      .history ul {
+        list-style: none;
+        padding-left: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 0 10px;
+      }
+
+      body.dark .history ul {
+        border-color: #4b5563;
+      }
+
+      .history ul li {
+        font-size: 1rem;
+        padding: 10px 0;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .history ul li:last-child {
+        border-bottom: none;
+      }
+
+      body.dark .history ul li {
+        border-color: #4b5563;
+      }
+
+      /* Charts */
+      .chart-container {
+        margin-top: 30px;
+        background: var(--card-light);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      body.dark .chart-container {
+        background: var(--card-dark);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Utility for Login/Account Sections */
+      #loginSection,
+      #accountSection {
+        padding: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="bank-card">
+        <div class="header">
+          <h2>Bank Account</h2>
+          <button class="toggle-btn" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+
+        <div class="login-section" id="loginSection">
+          <input type="text" id="username" placeholder="Enter your name" />
+          <button onclick="login()">Login</button>
+        </div>
+
+        <div class="account-section" id="accountSection" style="display: none">
+          <p class="welcome" id="welcomeUser"></p>
+          <p class="account-number">Account: <strong>1234 5678 9012</strong></p>
+
+          <div class="balance">Balance: <span id="balance">$0.00</span></div>
+
+          <div class="btn-group">
+            <button class="btn secondary" onclick="logout()">Logout</button>
+          </div>
+
+          <div class="form-section">
+            <h3>Add Transaction</h3>
+            <input
+              type="text"
+              id="descriptionInput"
+              placeholder="Description (e.g., Groceries, Salary)"
+            />
+            <input type="number" id="amountInput" placeholder="Amount" />
+            <select id="typeInput">
+              <option value="deposit">Deposit</option>
+              <option value="withdraw">Withdraw</option>
+            </select>
+            <select id="categoryInput">
+              <option value="General">General</option>
+              <option value="Food">Food</option>
+              <option value="Bills">Bills</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Salary">Salary</option>
+              <option value="Others">Others</option>
+            </select>
+            <button onclick="addTransaction()">Add Transaction</button>
+          </div>
+
+          <div class="filter-section">
+            <h3>Filter by Month</h3>
+            <input
+              type="month"
+              id="filterMonth"
+              onchange="filterTransactionsByDate()"
+            />
+          </div>
+
+          <div class="history">
+            <h3>Transaction History</h3>
+            <ul id="historyList"></ul>
+          </div>
+
+          <div class="chart-container">
+            <h3>Deposit vs. Withdrawal Summary</h3>
+            <canvas id="transactionChart" height="150"></canvas>
+          </div>
+
+          <div class="chart-container">
+            <h3>Spending by Category</h3>
+            <canvas id="categoryChart" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentBalance = 0;
+      let transactions = [];
+      let userName = "";
+      let transactionChart; // Renamed for clarity
+      let categoryChart; // New chart variable
+
+      function updateBalance() {
+        document.getElementById(
+          "balance"
+        ).textContent = `$${currentBalance.toFixed(2)}`;
+        localStorage.setItem("balance", currentBalance);
+      }
+
+      // Helper function to format transaction display
+      function formatTransaction(item) {
+        const sign = item.type === "deposit" ? "+" : "-";
+        const color =
+          item.type === "deposit"
+            ? "color: var(--secondary-color);"
+            : "color: var(--danger-color);";
+
+        const date = new Date(item.date).toLocaleDateString(undefined, {
+          day: "numeric",
+          month: "short",
+        });
+
+        return `
+              <div>
+                  <span style="font-weight: 600;">${
+                    item.description || item.type.toUpperCase()
+                  }</span>
+                  <span style="font-size: 0.8em; color: #9ca3af; margin-left: 10px;">(${
+                    item.category
+                  })</span>
+              </div>
+              <div style="${color} font-weight: 700;">
+                  ${sign}$${item.amount.toFixed(2)}
+              </div>
+              <div style="font-size: 0.7em; color: #6b7280; margin-left: auto;">${date}</div>
+          `;
+      }
+
+      function updateHistory(filteredTransactions = transactions) {
+        const list = document.getElementById("historyList");
+        list.innerHTML = "";
+
+        // Sort by date (newest first)
+        filteredTransactions.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        filteredTransactions.forEach((item) => {
+          const li = document.createElement("li");
+          li.innerHTML = formatTransaction(item);
+          list.appendChild(li);
+        });
+
+        localStorage.setItem("transactions", JSON.stringify(transactions));
+        updateCharts();
+      }
+
+      function filterTransactionsByDate() {
+        const filterMonth = document.getElementById("filterMonth").value;
+
+        if (!filterMonth) {
+          updateHistory(transactions); // Show all if no filter
+          return;
+        }
+
+        const [year, month] = filterMonth.split("-").map(Number);
+
+        const filtered = transactions.filter((t) => {
+          const tDate = new Date(t.date);
+          return tDate.getFullYear() === year && tDate.getMonth() + 1 === month;
+        });
+
+        updateHistory(filtered);
+      }
+
+      function addTransaction() {
+        const amount = parseFloat(document.getElementById("amountInput").value);
+        const type = document.getElementById("typeInput").value;
+        const category = document.getElementById("categoryInput").value;
+        const description =
+          document.getElementById("descriptionInput").value.trim() || category; // Use category as default description
+
+        if (!isNaN(amount) && amount > 0) {
+          if (type === "withdraw" && amount > currentBalance) {
+            alert("Insufficient balance!");
+            return;
+          }
+
+          if (type === "deposit") {
+            currentBalance += amount;
+          } else {
+            currentBalance -= amount;
+          }
+
+          transactions.unshift({
+            text: `${
+              type === "deposit" ? "Deposited" : "Withdrew"
+            } $${amount.toFixed(2)} (${category})`,
+            type: type,
+            amount: amount,
+            category: category,
+            description: description,
+            date: new Date().toISOString(), // Add a date for sorting/filtering
+          });
+
+          // Clear inputs
+          document.getElementById("amountInput").value = "";
+          document.getElementById("descriptionInput").value = "";
+
+          updateBalance();
+          updateHistory();
+        } else {
+          alert("Invalid amount!");
+        }
+      }
+
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark");
+        localStorage.setItem(
+          "darkMode",
+          document.body.classList.contains("dark")
+        );
+
+        const icon = document.querySelector(".toggle-btn i");
+        // Swap icon between sun and moon
+        const isDark = document.body.classList.contains("dark");
+        icon.classList.toggle("fa-moon", !isDark);
+        icon.classList.toggle("fa-sun", isDark);
+
+        // Redraw charts to update colors
+        if (transactionChart) transactionChart.destroy();
+        if (categoryChart) categoryChart.destroy();
+        transactionChart = null;
+        categoryChart = null;
+        updateCharts();
+      }
+
+      function login() {
+        const nameInput = document.getElementById("username").value.trim();
+        if (nameInput !== "") {
+          userName = nameInput;
+          localStorage.setItem("userName", userName);
+          document.getElementById(
+            "welcomeUser"
+          ).textContent = `Welcome, ${userName}!`;
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("accountSection").style.display = "block";
+          updateBalance();
+          updateHistory();
+        } else {
+          alert("Please enter your name.");
+        }
+      }
+
+      function logout() {
+        if (confirm("Are you sure you want to logout?")) {
+          // Keep dark mode setting, but clear financial/user data
+          localStorage.removeItem("userName");
+          localStorage.removeItem("balance");
+          localStorage.removeItem("transactions");
+
+          currentBalance = 0;
+          transactions = [];
+
+          if (transactionChart) transactionChart.destroy();
+          if (categoryChart) categoryChart.destroy();
+          transactionChart = null;
+          categoryChart = null;
+
+          document.getElementById("accountSection").style.display = "none";
+          document.getElementById("loginSection").style.display = "block";
+          document.getElementById("username").value = "";
+        }
+      }
+
+      function updateCharts() {
+        // --- Monthly Summary Chart (Bar) ---
+        const depositSum = transactions
+          .filter((t) => t.type === "deposit")
+          .reduce((acc, t) => acc + t.amount, 0);
+        const withdrawSum = transactions
+          .filter((t) => t.type === "withdraw")
+          .reduce((acc, t) => acc + t.amount, 0);
+
+        if (transactionChart) {
+          transactionChart.data.datasets[0].data = [depositSum, withdrawSum];
+          transactionChart.update();
+        } else {
+          const ctx = document
+            .getElementById("transactionChart")
+            .getContext("2d");
+          transactionChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: ["Deposits", "Withdrawals"],
+              datasets: [
+                {
+                  label: "Amount ($)",
+                  data: [depositSum, withdrawSum],
+                  backgroundColor: [
+                    getComputedStyle(document.documentElement).getPropertyValue(
+                      "--secondary-color"
+                    ) || "#10b981",
+                    getComputedStyle(document.documentElement).getPropertyValue(
+                      "--danger-color"
+                    ) || "#ef4444",
+                  ],
+                  borderRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: {
+                    color: document.body.classList.contains("dark")
+                      ? "rgba(255, 255, 255, 0.1)"
+                      : "rgba(0, 0, 0, 0.1)",
+                    borderColor: document.body.classList.contains("dark")
+                      ? "#555"
+                      : "#ccc",
+                  },
+                  ticks: {
+                    color: document.body.classList.contains("dark")
+                      ? "#f9fafb"
+                      : "#1f2937",
+                  },
+                },
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    color: document.body.classList.contains("dark")
+                      ? "#f9fafb"
+                      : "#1f2937",
+                  },
+                },
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
+            },
+          });
+        }
+
+        // --- Spending by Category Chart (Doughnut) ---
+        const spendingData = transactions
+          .filter((t) => t.type === "withdraw")
+          .reduce((acc, t) => {
+            acc[t.category] = (acc[t.category] || 0) + t.amount;
+            return acc;
+          }, {});
+
+        const categoryLabels = Object.keys(spendingData);
+        const categoryAmounts = Object.values(spendingData);
+
+        const defaultColors = [
+          "#FBBF24",
+          "#34D399",
+          "#60A5FA",
+          "#F87171",
+          "#9333EA",
+          "#4B5563",
+        ];
+
+        if (categoryChart) {
+          categoryChart.data.labels = categoryLabels;
+          categoryChart.data.datasets[0].data = categoryAmounts;
+          categoryChart.update();
+        } else {
+          const ctxCategory = document
+            .getElementById("categoryChart")
+            .getContext("2d");
+          categoryChart = new Chart(ctxCategory, {
+            type: "doughnut",
+            data: {
+              labels: categoryLabels,
+              datasets: [
+                {
+                  data: categoryAmounts,
+                  backgroundColor: defaultColors.slice(
+                    0,
+                    categoryLabels.length
+                  ),
+                  borderColor: document.body.classList.contains("dark")
+                    ? "#374151"
+                    : "#ffffff",
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    color: document.body.classList.contains("dark")
+                      ? "#f9fafb"
+                      : "#1f2937",
+                  },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      // Load saved data
+      window.onload = () => {
+        // Initialize Moon/Sun icon based on stored theme
+        const isDark = localStorage.getItem("darkMode") === "true";
+        if (isDark) {
+          document.body.classList.add("dark");
+          document.querySelector(".toggle-btn i").classList.add("fa-sun");
+        } else {
+          document.querySelector(".toggle-btn i").classList.add("fa-moon");
+        }
+
+        if (localStorage.getItem("userName")) {
+          userName = localStorage.getItem("userName");
+          currentBalance = parseFloat(localStorage.getItem("balance")) || 0;
+          transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+          document.getElementById(
+            "welcomeUser"
+          ).textContent = `Welcome, ${userName}!`;
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("accountSection").style.display = "block";
+          updateBalance();
+          updateHistory();
+          // Charts are initialized inside updateHistory -> updateCharts
+        }
+
+        // Initial setup of the date filter input to the current month
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        document.getElementById("filterMonth").value = `${year}-${month}`;
+        filterTransactionsByDate();
+      };
+
+      // Removed the redundant/non-browser-friendly code (http server, fetchApi)
+    </script>
+  </body>
+</html>
